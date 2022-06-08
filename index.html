@@ -1,0 +1,132 @@
+<html>
+
+<body style="background-color:lightblue;">
+
+<canvas id="myCanvas" onload = 'move()' onclick = "clickfunc()" width="800" height="400" style=" padding-left: 0;
+    padding-right: 0;
+	
+    margin-left: auto;
+    margin-right: auto;
+	margin-top: 0px;
+    display: block;border:3px solid white;">
+</canvas>
+
+</body>
+
+
+<script>
+var canvas = document.getElementById("myCanvas");
+var ctx = canvas.getContext("2d");
+ctx.font = "16px Arial";
+
+var canvasX = 0; 
+var canvasY = 0; 
+canvas.addEventListener("mousemove", function(e) { 
+    var cRect = canvas.getBoundingClientRect();              // Gets the CSS positions along with width/height
+    canvasX = Math.round(e.clientX - cRect.left);        // Subtract the 'left' of the canvas from the X/Y
+    canvasY = Math.round(e.clientY - cRect.top);         // positions to get make (0,0) the top left of the    
+});
+
+
+function sound(src) {
+ this.sound = document.createElement("audio");
+this.sound.src = src;
+this.sound.setAttribute("preload", "auto");
+this.sound.setAttribute("controls", "none");
+this.sound.style.display = "none";
+document.body.appendChild(this.sound);
+this.play = function(){
+this.sound.play();
+}
+this.stop = function(){
+this.sound.pause();
+}   
+}
+
+backtrack = new sound("sounds/backtrack.mp3");
+
+var block = function(x,y,w,h) {
+    this.x = x;
+    this.y = y;
+    this.w = w;
+    this.h = h;
+};
+
+block.prototype.draw = function() {
+    ctx.fillStyle = "#fc0303"
+    ctx.fillRect(this.x, this.y, this.w, this.h);
+};
+
+block.prototype.move = function() {
+		
+};
+
+var blockArray = [];
+
+//blockArray.push(new block(350, 150,40,40));
+
+function clickfunc(){
+	if (canvasX > 700 && canvasX < 790){
+		if (canvasY > 300 && canvasY < 400){jump = 1;}
+	}
+}
+
+var myVar = setInterval(move, 20);
+
+
+var xpos = 370;
+var ypos = 225;
+
+var jump = 0; 
+var yvel = -15; 
+
+function move() {
+
+//backtrack.play();
+
+//BG
+ctx.fillStyle = "black";
+ctx.fillRect(0,0, 800, 400);
+
+ctx.drawImage(gamebg, 0, 0,800,400);
+
+//Prototypes
+for(var i = 0; i < blockArray.length ; i++) {
+        blockArray[i].draw();
+        blockArray[i].move();
+}
+
+
+//Text
+ctx.font = "30px Arial";
+ctx.fillStyle = "white";
+ctx.fillText("X: " + canvasX,3,30);
+ctx.fillText("Y: " + canvasY,3,60);
+
+
+//UI
+if (jump == 0){ctx.drawImage(jumpButton, 700, 302,90,90);}
+if (jump == 1){ctx.drawImage(jumpButtonClicked, 700, 302,90,90);}
+
+
+//Player
+ctx.fillStyle = "black";
+ctx.fillRect(xpos,ypos, 60, 60);
+
+if (jump == 1){
+ypos = ypos + yvel;
+yvel = yvel + 1;
+	if (yvel > 15){jump = 0; yvel = -15;}
+}
+
+
+}//End of FUNCTION
+
+
+</script>
+
+<img id="gamebg"  style="display:none; visibility:hidden;" src="scene/gamebg.png" alt="">
+<img id="jumpButton"  style="display:none; visibility:hidden;" src="ui/jumpButton.png" alt="">
+<img id="jumpButtonClicked"  style="display:none; visibility:hidden;" src="ui/jumpButtonClicked.png" alt="">
+
+</html> 
